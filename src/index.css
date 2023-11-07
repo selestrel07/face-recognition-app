@@ -3,6 +3,8 @@ body {
   padding: 0;
   font-family: "Courier New", Courier, monospace;
   background: linear-gradient(48deg, #845EC2 0%, #4FFBDF 48%, #008B74 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 code {
