@@ -31,7 +31,6 @@ class App extends Component {
   MODEL_ID = 'face-detection'; 
 
   loadUser = (data) => {
-    debugger;
     this.setState({ user:{
       id: data.id,
       name: data.name,
@@ -39,7 +38,6 @@ class App extends Component {
       entries: data.entries,
       joined: data.joined
     }})
-    console.log(this.state.user);
   }
 
   returnClarifaiRequestOptions = (imageUrl) => {
@@ -101,7 +99,22 @@ class App extends Component {
     this.setState({ imageUrl: this.state.input })
     fetch("https://api.clarifai.com/v2/models/" + this.MODEL_ID + "/outputs", this.returnClarifaiRequestOptions(this.state.input))
         .then(response => response.json())
-        .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+        .then(response => {
+          console.log(response);
+          if (response) {
+            fetch('http://localhost:3003/image', {
+              method: 'put',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                  id: this.state.user.id
+              })})
+                .then(response => response.json())
+                .then(count => {
+                  this.setState(Object.assign(this.state.user, {entries: count}))
+                });
+            this.displayFaceBox(this.calculateFaceLocation(response));
+          }
+        })
         .catch(error => console.log('error', error));
   }
 
@@ -123,12 +136,12 @@ class App extends Component {
         { route === 'home'
         ? <div>
         <Logo />
-        <Rank />
+        <Rank name={this.state.user.name} entries={this.state.user.entries} />
         <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
         <FaceRecognition box={box} imageUrl={imageUrl} />
       </div>
         : (route === "signin"
-        ? <SignIn onRouteChange={this.onRouteChange} />
+        ? <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
         : <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>)
         }
       </div>
