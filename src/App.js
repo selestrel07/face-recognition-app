@@ -17,11 +17,30 @@ class App extends Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
   MODEL_ID = 'face-detection'; 
+
+  loadUser = (data) => {
+    debugger;
+    this.setState({ user:{
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    }})
+    console.log(this.state.user);
+  }
 
   returnClarifaiRequestOptions = (imageUrl) => {
     const PAT = '9069e85c21cd43efaeed1ac125a78984';
@@ -110,7 +129,7 @@ class App extends Component {
       </div>
         : (route === "signin"
         ? <SignIn onRouteChange={this.onRouteChange} />
-        : <Register onRouteChange={this.onRouteChange}/>)
+        : <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>)
         }
       </div>
     );
