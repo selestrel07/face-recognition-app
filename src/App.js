@@ -8,6 +8,21 @@ import SignIn from './components/signin/SignIn.js';
 import Register from './components/register/Register.js';
 import ParticlesBg from 'particles-bg';
 import { Component } from 'react';
+
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+}
 class App extends Component {
 
   constructor() {
@@ -111,7 +126,8 @@ class App extends Component {
                 .then(response => response.json())
                 .then(count => {
                   this.setState(Object.assign(this.state.user, {entries: count}))
-                });
+                })
+                .catch(console.log);
             this.displayFaceBox(this.calculateFaceLocation(response));
           }
         })
@@ -119,8 +135,8 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
-    if (route === 'signin' || route === 'register') {
-      this.setState({ isSignedIn: false});
+    if (route === 'signin') {
+      this.setState(initialState);
     } else if (route === 'home') {
       this.setState({ isSignedIn: true });
     }
